@@ -1,10 +1,8 @@
-package com.br.com.nava.focus.adapter.dto;
+package com.br.com.nava.focus.adapter.dto.store;
 
 import com.br.com.nava.focus.domain.model.Address;
 import com.br.com.nava.focus.domain.model.Contact;
 import com.br.com.nava.focus.domain.model.Product;
-import com.br.com.nava.focus.domain.model.Store;
-import com.br.com.nava.focus.domain.repository.StoreMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 
