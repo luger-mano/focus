@@ -1,12 +1,13 @@
 package com.br.com.nava.focus.adapter.controller;
 
 
-import com.br.com.nava.focus.adapter.dto.CreateStoreRequestDto;
-import com.br.com.nava.focus.adapter.dto.StoreResponseDto;
+import com.br.com.nava.focus.adapter.dto.store.CreateStoreRequestDto;
+import com.br.com.nava.focus.adapter.dto.store.StorePaginationDto;
+import com.br.com.nava.focus.adapter.dto.store.StoreResponseDto;
 import com.br.com.nava.focus.domain.model.Store;
 import com.br.com.nava.focus.domain.repository.StoreService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,9 +29,12 @@ public class StoreController {
     }
 
     @GetMapping("/stores")
-    public ResponseEntity<List<StoreResponseDto>> getAllStores(){
-        storeService.getAllStores();
-        return ResponseEntity.ok().build();
+    public ResponseEntity<List<StorePaginationDto>> getAllStores(@RequestParam(value = "page",
+                                                                           defaultValue = "0") int page,
+                                                                 @RequestParam(value = "pageSize",
+                                                                       defaultValue = "10") int pageSize){
+        var stores = storeService.getAllStores(page, pageSize);
+        return ResponseEntity.ok(stores);
     }
 
 }

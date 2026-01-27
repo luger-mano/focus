@@ -19,7 +19,7 @@ public class Store {
     private String name;
     @Embedded
     private Contact contact;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_address_id")
     private Address address;
     @ManyToMany(cascade = CascadeType.PERSIST)
