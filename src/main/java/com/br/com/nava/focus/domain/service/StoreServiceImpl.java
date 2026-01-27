@@ -1,19 +1,18 @@
 package com.br.com.nava.focus.domain.service;
 
-import com.br.com.nava.focus.adapter.dto.CreateStoreRequestDto;
-import com.br.com.nava.focus.adapter.dto.StoreResponseDto;
+import com.br.com.nava.focus.adapter.dto.store.CreateStoreRequestDto;
+import com.br.com.nava.focus.adapter.dto.store.StorePaginationDto;
+import com.br.com.nava.focus.adapter.dto.store.StoreResponseDto;
 import com.br.com.nava.focus.domain.model.Store;
-import com.br.com.nava.focus.domain.repository.StoreMapper;
+import com.br.com.nava.focus.domain.repository.AddressService;
 import com.br.com.nava.focus.domain.repository.StoreRepository;
 import com.br.com.nava.focus.domain.repository.StoreService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -22,8 +21,8 @@ public class StoreServiceImpl implements StoreService {
 
     @Autowired
     private StoreRepository storeRepository;
-
-    // CRIAR ADDRESS SERVICE E REPOSITORY PARA SALVAR NO BANCO
+    @Autowired
+    private AddressService addressService;
 
     @Override
     @Transactional
@@ -31,13 +30,16 @@ public class StoreServiceImpl implements StoreService {
         try {
 
             if (storeRepository.existsByContactEmail(requestDto.contact().getEmail())) {
-                System.out.println("Caiu aqui");
                 log.warn("Já existe uma loja cadastrada com o email: {}", requestDto.contact().getEmail());
                 return new Store();
             }
 
             var storeEntity = requestDto.toEntity();
-            System.out.println(storeEntity.getStoreId());
+
+            var addressSaved = addressService.saveAddress(requestDto.address(), storeEntity);
+
+            storeEntity.setAddress(addressSaved);
+
             var storeSaved = storeRepository.save(storeEntity);
 
             log.info("Loja salvada com sucesso {}", storeSaved);
@@ -49,17 +51,20 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<StoreResponseDto> getAllStores() {
-        var listAll = this.storeRepository.findAll();
+    public List<StorePaginationDto> getAllStores(int page, int pageSize) {
+        var listAll = this.storeRepository.findAll(PageRequest.of(page,
+                pageSize));
 
-        if (listAll.isEmpty()) {
-            return new ArrayList<>();
-        }
 
-        return listAll.stream()
-                .map(StoreMapper::toDto)
+        return listAll.map(store -> new StorePaginationDto(new StoreResponseDto(store.getName(),
+                        store.getContact(),
+                        store.getAddress(),
+                        store.getProducts()),
+                        page,
+                        pageSize,
+                        listAll.getTotalPages(),
+                        listAll.getNumberOfElements()))
                 .toList();
     }
-
 
 }
