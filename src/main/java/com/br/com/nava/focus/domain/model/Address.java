@@ -17,6 +17,7 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long addressId;
+    private String cep;
     private String logradouro;
     private String complemento;
     private String unidade;
@@ -34,8 +35,9 @@ public class Address {
     @JoinColumn(name = "store_id", unique = true)
     private Store store;
 
-    public Address(Long addressId, String logradouro, String complemento, String unidade, String bairro, String localidade, String uf, String estado, String regiao, String ibge, String gia, String siafi) {
+    public Address(Long addressId, String cep, String logradouro, String complemento, String unidade, String bairro, String localidade, String uf, String estado, String regiao, String ibge, String gia, String siafi, Store store) {
         this.addressId = addressId;
+        this.cep = cep;
         this.logradouro = logradouro;
         this.complemento = complemento;
         this.unidade = unidade;
@@ -47,6 +49,7 @@ public class Address {
         this.ibge = ibge;
         this.gia = gia;
         this.siafi = siafi;
+        this.store = store;
     }
 
     public Address() {
