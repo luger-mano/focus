@@ -1,5 +1,6 @@
-package com.br.com.nava.focus.adapter.dto;
+package com.br.com.nava.focus.adapter.dto.store;
 
+import com.br.com.nava.focus.adapter.dto.address.AddressRequestDto;
 import com.br.com.nava.focus.domain.model.Address;
 import com.br.com.nava.focus.domain.model.Contact;
 import com.br.com.nava.focus.domain.model.Product;
@@ -13,7 +14,7 @@ import java.util.UUID;
 public record CreateStoreRequestDto(UUID storeId,
                                     @NotBlank(message = "O campo nome deve ser preenchido") String name,
                                     Contact contact,
-                                    @NotEmpty(message = "As informações de endereço não podem estar vazias") Address address,
+                                    @NotEmpty(message = "As informações de endereço não podem estar vazias") AddressRequestDto address,
                                     List<Product> products) {
 
     public Store toEntity() {
@@ -21,7 +22,7 @@ public record CreateStoreRequestDto(UUID storeId,
         store.setStoreId(storeId);
         store.setName(this.name);
         store.setContact(this.contact());
-        store.setAddress(this.address());
+        store.setAddress(address.toEntity());
         store.setProducts(this.products());
         return store;
     }
