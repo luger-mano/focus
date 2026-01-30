@@ -6,11 +6,14 @@ import com.br.com.nava.focus.adapter.dto.store.StoreResponseDto;
 import com.br.com.nava.focus.domain.model.Store;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface StoreService {
 
     Store createStore(CreateStoreRequestDto requestDto);
 
     List<StorePaginationDto> getAllStores(int page, int pageSize);
+
+    StoreResponseDto getStoreById(UUID id);
 
 }
