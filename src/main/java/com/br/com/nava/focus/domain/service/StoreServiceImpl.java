@@ -3,26 +3,36 @@ package com.br.com.nava.focus.domain.service;
 import com.br.com.nava.focus.adapter.dto.store.CreateStoreRequestDto;
 import com.br.com.nava.focus.adapter.dto.store.StorePaginationDto;
 import com.br.com.nava.focus.adapter.dto.store.StoreResponseDto;
+import com.br.com.nava.focus.domain.algorithms.Researcher;
+import com.br.com.nava.focus.domain.algorithms.SearchStrategy;
 import com.br.com.nava.focus.domain.model.Store;
 import com.br.com.nava.focus.domain.repository.AddressService;
 import com.br.com.nava.focus.domain.repository.StoreRepository;
 import com.br.com.nava.focus.domain.repository.StoreService;
+import com.br.com.nava.focus.mapper.StoreMapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
 public class StoreServiceImpl implements StoreService {
 
-    @Autowired
-    private StoreRepository storeRepository;
-    @Autowired
-    private AddressService addressService;
+    private final StoreRepository storeRepository;
+    private final AddressService addressService;
+    private final StoreMapper mapper;
+
+    public StoreServiceImpl(StoreRepository storeRepository, AddressService addressService, StoreMapper mapper) {
+        this.storeRepository = storeRepository;
+        this.addressService = addressService;
+        this.mapper = mapper;
+    }
+
 
     @Override
     @Transactional
@@ -56,15 +66,36 @@ public class StoreServiceImpl implements StoreService {
                 pageSize));
 
 
-        return listAll.map(store -> new StorePaginationDto(new StoreResponseDto(store.getName(),
-                        store.getContact(),
-                        store.getAddress(),
-                        store.getProducts()),
+        return listAll.map(store -> new StorePaginationDto(
+                        new StoreResponseDto(store.getName(),
+                                store.getContact(),
+                                store.getAddress(),
+                                store.getProducts()),
                         page,
                         pageSize,
                         listAll.getTotalPages(),
                         listAll.getNumberOfElements()))
                 .toList();
+    }
+
+    @Override
+    public StoreResponseDto getStoreById(UUID id) {
+        SearchStrategy<Store, UUID> strategy = new Researcher<>();
+
+        List<Store> storesList = this.storeRepository.findAll();
+        var storeArray = storesList.toArray(new Store[0]);
+
+        Optional<Store> store = strategy.binarySearch(
+                storeArray,
+                id,
+                Store::getStoreId,
+                UUID::compareTo);
+
+        if (store.isEmpty()) {
+            throw new RuntimeException();
+        }
+
+        return mapper.toDto(store.get());
     }
 
 }
