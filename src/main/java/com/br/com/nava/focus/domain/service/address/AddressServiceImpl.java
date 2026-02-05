@@ -1,16 +1,18 @@
-package com.br.com.nava.focus.domain.service;
+package com.br.com.nava.focus.domain.service.address;
 
 import com.br.com.nava.focus.adapter.dto.address.AddressRequestDto;
+import com.br.com.nava.focus.adapter.dto.address.AddressResponseDto;
 import com.br.com.nava.focus.domain.model.Address;
 import com.br.com.nava.focus.domain.model.Store;
 import com.br.com.nava.focus.domain.repository.AddressRepository;
-import com.br.com.nava.focus.domain.repository.AddressService;
 import com.br.com.nava.focus.domain.repository.ViaCepIntegration;
 import com.google.gson.Gson;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -30,10 +32,10 @@ public class AddressServiceImpl implements AddressService, ViaCepIntegration {
     public Address saveAddress(AddressRequestDto addressRequestDto, Store store) {
         try {
 
-            var addressEntity = getAddressByCep(addressRequestDto.cep());
-            addressEntity.setStore(store);
+            var addressDto = getAddressByCep(addressRequestDto.cep());
+            var addressEntity = addressDto.toEntity();
 
-            log.info("Endereço salvado com sucesso no banco: {}", addressEntity);
+            log.info("Endereço salvo com sucesso no banco: {}", addressEntity);
             return addressRepository.save(addressEntity);
 
         } catch (Exception e) {
@@ -44,7 +46,7 @@ public class AddressServiceImpl implements AddressService, ViaCepIntegration {
 
 
     @Override
-    public Address getAddressByCep(String cep) {
+    public AddressResponseDto getAddressByCep(String cep) {
         try {
 
             Gson gson = new Gson();
@@ -61,16 +63,16 @@ public class AddressServiceImpl implements AddressService, ViaCepIntegration {
             String responseBody = response.body();
 
             if (!responseBody.isBlank()) {
-                log.info("Object Java serializado: {}", responseBody);
-                return gson.fromJson(responseBody, Address.class);
+                log.info("[AddressServiceImpl] - Object Java serializado: {}", responseBody);
+                return gson.fromJson(responseBody, AddressResponseDto.class);
             }
 
             log.info("Não foi possível serializar o object Java para Json");
-            return new Address();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         } catch (Exception e) {
             log.error("Erro ao serializar o object Java para Json: {}", e.getMessage());
-            return new Address();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 }
