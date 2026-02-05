@@ -5,9 +5,8 @@ import com.br.com.nava.focus.adapter.dto.store.CreateStoreRequestDto;
 import com.br.com.nava.focus.adapter.dto.store.StorePaginationDto;
 import com.br.com.nava.focus.adapter.dto.store.StoreResponseDto;
 import com.br.com.nava.focus.domain.model.Store;
-import com.br.com.nava.focus.domain.repository.StoreService;
+import com.br.com.nava.focus.domain.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +20,9 @@ public class StoreController {
 
     private final StoreService storeService;
 
-    @PostMapping("/store")
-    public ResponseEntity<Store> createStore(@RequestBody CreateStoreRequestDto requestDto) {
-        var storeCreated = storeService.createStore(requestDto);
+    @PostMapping("/brand/{brandId}/store")
+    public ResponseEntity<StoreResponseDto> createStore(@RequestBody CreateStoreRequestDto requestDto, @PathVariable String brandId) {
+        var storeCreated = storeService.createStore(requestDto, brandId);
         return ResponseEntity.ok(storeCreated);
     }
 
@@ -41,5 +40,8 @@ public class StoreController {
         var storeId = storeService.getStoreById(id);
         return ResponseEntity.ok(storeId);
     }
+
+
+
 
 }

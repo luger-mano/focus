@@ -1,14 +1,15 @@
-package com.br.com.nava.focus.domain.service;
+package com.br.com.nava.focus.domain.service.store;
 
 import com.br.com.nava.focus.adapter.dto.store.CreateStoreRequestDto;
 import com.br.com.nava.focus.adapter.dto.store.StorePaginationDto;
 import com.br.com.nava.focus.adapter.dto.store.StoreResponseDto;
-import com.br.com.nava.focus.domain.algorithms.Researcher;
-import com.br.com.nava.focus.domain.algorithms.SearchStrategy;
+import com.br.com.nava.focus.domain.algorithms.researcher.Researcher;
+import com.br.com.nava.focus.domain.algorithms.researcher.SearchStrategy;
 import com.br.com.nava.focus.domain.model.Store;
-import com.br.com.nava.focus.domain.repository.AddressService;
 import com.br.com.nava.focus.domain.repository.StoreRepository;
-import com.br.com.nava.focus.domain.repository.StoreService;
+import com.br.com.nava.focus.domain.service.address.AddressService;
+import com.br.com.nava.focus.domain.service.brand.BrandService;
+import com.br.com.nava.focus.mapper.BrandMapper;
 import com.br.com.nava.focus.mapper.StoreMapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -25,38 +26,40 @@ public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
     private final AddressService addressService;
-    private final StoreMapper mapper;
+    private final BrandService brandService;
+    private final StoreMapper storeMapper;
+    private BrandMapper brandMapper;
 
-    public StoreServiceImpl(StoreRepository storeRepository, AddressService addressService, StoreMapper mapper) {
+    public StoreServiceImpl(StoreRepository storeRepository, AddressService addressService, BrandService brandService, StoreMapper storeMapper) {
         this.storeRepository = storeRepository;
         this.addressService = addressService;
-        this.mapper = mapper;
+        this.brandService = brandService;
+        this.storeMapper = storeMapper;
     }
-
 
     @Override
     @Transactional
-    public Store createStore(CreateStoreRequestDto requestDto) {
+    public StoreResponseDto createStore(CreateStoreRequestDto requestDto, String brandId) {
+
         try {
+            var storeEntity = requestDto.toEntity();
 
             if (storeRepository.existsByContactEmail(requestDto.contact().getEmail())) {
                 log.warn("Já existe uma loja cadastrada com o email: {}", requestDto.contact().getEmail());
-                return new Store();
+                return new StoreResponseDto(null, null);
             }
 
-            var storeEntity = requestDto.toEntity();
-
             var addressSaved = addressService.saveAddress(requestDto.address(), storeEntity);
-
             storeEntity.setAddress(addressSaved);
 
             var storeSaved = storeRepository.save(storeEntity);
+            log.info("Loja criada com sucesso {}", storeSaved);
 
-            log.info("Loja salvada com sucesso {}", storeSaved);
-            return new Store(storeSaved.getStoreId(), storeSaved.getName(), storeSaved.getContact(), storeSaved.getAddress(), storeSaved.getProducts());
+            return storeMapper.toDto(storeSaved);
+
         } catch (Exception e) {
-            log.error("Não foi possível salvar uma loja no banco.");
-            return new Store();
+            log.error("Não foi possível criar uma loja no banco.");
+            return new StoreResponseDto(null, null);
         }
     }
 
@@ -67,10 +70,9 @@ public class StoreServiceImpl implements StoreService {
 
 
         return listAll.map(store -> new StorePaginationDto(
-                        new StoreResponseDto(store.getName(),
+                        new StoreResponseDto(
                                 store.getContact(),
-                                store.getAddress(),
-                                store.getProducts()),
+                                store.getAddress()),
                         page,
                         pageSize,
                         listAll.getTotalPages(),
@@ -95,7 +97,7 @@ public class StoreServiceImpl implements StoreService {
             throw new RuntimeException();
         }
 
-        return mapper.toDto(store.get());
+        return storeMapper.toDto(store.get());
     }
 
 }

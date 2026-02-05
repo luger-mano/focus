@@ -1,4 +1,4 @@
-package com.br.com.nava.focus.domain.repository;
+package com.br.com.nava.focus.domain.service.store;
 
 import com.br.com.nava.focus.adapter.dto.store.CreateStoreRequestDto;
 import com.br.com.nava.focus.adapter.dto.store.StorePaginationDto;
@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface StoreService {
 
-    Store createStore(CreateStoreRequestDto requestDto);
+    StoreResponseDto createStore(CreateStoreRequestDto requestDto, String brandId);
 
     List<StorePaginationDto> getAllStores(int page, int pageSize);
 
