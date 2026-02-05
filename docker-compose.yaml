@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  postgresql-db:
+    image: postgis/postgis
+    container_name: focus-post
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql-focus:5432/focus_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 3571
+    volumes:
+      - postgresql-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pq_isready -U postgres"]
+      retries: 3
+      timeout: 5s
+      interval: 10s
+      start_period: 30s
+
+volumes:
+  postgresql-db:
+
+networks:
+  databases-focus:
+    name: my-pre-existing-postgres-networking
+    external: false
+
+
