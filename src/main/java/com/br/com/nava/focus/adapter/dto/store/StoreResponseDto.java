@@ -6,11 +6,11 @@ import com.br.com.nava.focus.domain.model.Product;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 
-import java.util.List;
+import java.util.Set;
 
-public record StoreResponseDto(@NotBlank(message = "O campo nome deve ser preenchido") String name,
-                               @NotEmpty(message = "As informações de contato não podem estar vazias") Contact contact,
-                               @NotEmpty(message = "As informações de endereço não podem estar vazias") Address address,
-                               List<Product> products){
+public record StoreResponseDto(@NotEmpty(message = "As informações de contato não podem estar vazias")
+                               Contact contact,
+                               @NotEmpty(message = "As informações de endereço não podem estar vazias")
+                               Address address){
 
 }
