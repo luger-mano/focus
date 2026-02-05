@@ -12,7 +12,6 @@ public interface BrandMapper {
     Brand brandResponseToEntity(BrandResponseDto dto);
 
     BrandResponseDto brandEntityToBrandResponseDto(Brand brand);
-    BrandRequestDto brandEntityToBrandRequestDto(Brand brand);
 
 
 }
