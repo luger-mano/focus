@@ -1,4 +1,4 @@
-package com.br.com.nava.focus.domain.algorithms;
+package com.br.com.nava.focus.domain.algorithms.sorter;
 
 import java.util.Comparator;
 import java.util.function.Function;
