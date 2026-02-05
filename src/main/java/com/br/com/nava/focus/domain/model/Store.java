@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Setter
@@ -14,24 +15,37 @@ import java.util.UUID;
 public class Store {
 
     @Id
+    @Column(name = "store_id")
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID storeId;
+
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
+
     @Embedded
     private Contact contact;
-    @ManyToOne
-    @JoinColumn(name = "address_address_id")
+
+    @OneToOne(mappedBy = "store")
     private Address address;
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    private List<Product> products;
 
+    @OneToMany(mappedBy = "store")
+    private List<User> users;
 
-    public Store(UUID storeId, String name, Contact contact, Address address, List<Product> products) {
+    @OneToMany(mappedBy = "store")
+    private List<StoreProduct> storeProducts;
+
+    @ManyToOne
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
+
+    public Store(UUID storeId, String name, Contact contact, Address address, List<User> users, List<StoreProduct> storeProducts, Brand brand) {
         this.storeId = storeId;
         this.name = name;
         this.contact = contact;
         this.address = address;
-        this.products = products;
+        this.users = users;
+        this.storeProducts = storeProducts;
+        this.brand = brand;
     }
 
     public Store() {
