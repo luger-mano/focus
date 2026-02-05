@@ -1,4 +1,4 @@
-package com.br.com.nava.focus.domain.algorithms;
+package com.br.com.nava.focus.domain.algorithms.researcher;
 
 import java.util.Comparator;
 import java.util.Optional;

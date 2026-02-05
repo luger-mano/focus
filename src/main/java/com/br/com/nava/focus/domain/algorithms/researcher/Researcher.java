@@ -1,4 +1,7 @@
-package com.br.com.nava.focus.domain.algorithms;
+package com.br.com.nava.focus.domain.algorithms.researcher;
+
+import com.br.com.nava.focus.domain.algorithms.sorter.Sorter;
+import com.br.com.nava.focus.domain.algorithms.sorter.SortsStrategy;
 
 import java.util.Comparator;
 import java.util.Optional;
