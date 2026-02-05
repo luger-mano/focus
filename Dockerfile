@@ -2,19 +2,23 @@ FROM maven:3.8-amazoncorretto-17 AS build
 
 WORKDIR /app
 
-COPY pom.xml .
+COPY . .
 
 RUN mvn dependency:go-offline
 
-COPY . .
+COPY src/ ./src/
 
 RUN mvn package -DskipTests
 
-FROM amazoncorretto:17-alpine
+FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
-COPY --from=build /app/target/focus-0.0.1-SNAPSHOT*jar app.jar
+COPY --from=build /app/target/*jar app.jar
+
+RUN addgroup -S spring && adduser -S spring -G spring
+
+USER spring
 
 EXPOSE 9002
 
