@@ -1,15 +1,15 @@
 package com.br.com.nava.focus.domain.service.store;
 
-import com.br.com.nava.focus.adapter.dto.store.CreateStoreRequestDto;
-import com.br.com.nava.focus.adapter.dto.store.StorePaginationDto;
-import com.br.com.nava.focus.adapter.dto.store.StoreResponseDto;
+import com.br.com.nava.focus.adapter.dto.address.AddressResponseDto;
+import com.br.com.nava.focus.adapter.dto.store.*;
 import com.br.com.nava.focus.domain.algorithms.researcher.Researcher;
 import com.br.com.nava.focus.domain.algorithms.researcher.SearchStrategy;
+import com.br.com.nava.focus.domain.model.Address;
+import com.br.com.nava.focus.domain.model.Brand;
 import com.br.com.nava.focus.domain.model.Store;
 import com.br.com.nava.focus.domain.repository.StoreRepository;
 import com.br.com.nava.focus.domain.service.address.AddressService;
 import com.br.com.nava.focus.domain.service.brand.BrandService;
-import com.br.com.nava.focus.mapper.BrandMapper;
 import com.br.com.nava.focus.mapper.StoreMapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,6 @@ public class StoreServiceImpl implements StoreService {
     private final AddressService addressService;
     private final BrandService brandService;
     private final StoreMapper storeMapper;
-    private BrandMapper brandMapper;
 
     public StoreServiceImpl(StoreRepository storeRepository, AddressService addressService, BrandService brandService, StoreMapper storeMapper) {
         this.storeRepository = storeRepository;
@@ -42,21 +41,23 @@ public class StoreServiceImpl implements StoreService {
     public StoreResponseDto createStore(CreateStoreRequestDto requestDto, String brandId) {
 
         try {
-            var storeEntity = requestDto.toEntity();
-
             if (storeRepository.existsByContactEmail(requestDto.contact().getEmail())) {
                 log.warn("Já existe uma loja cadastrada com o email: {}", requestDto.contact().getEmail());
                 return new StoreResponseDto(null, null);
             }
 
-            var addressSaved = addressService.saveAddress(requestDto.address(), storeEntity);
+            Store storeEntity = requestDto.toEntity();
+
+            Brand brand = brandService.findById(brandId);
+            storeEntity.setBrand(brand);
+
+            Address addressSaved = addressService.saveAddress(requestDto.address(), storeEntity);
             storeEntity.setAddress(addressSaved);
 
-            var storeSaved = storeRepository.save(storeEntity);
+            Store storeSaved = storeRepository.save(storeEntity);
             log.info("Loja criada com sucesso {}", storeSaved);
 
             return storeMapper.toDto(storeSaved);
-
         } catch (Exception e) {
             log.error("Não foi possível criar uma loja no banco.");
             return new StoreResponseDto(null, null);
@@ -68,15 +69,37 @@ public class StoreServiceImpl implements StoreService {
         var listAll = this.storeRepository.findAll(PageRequest.of(page,
                 pageSize));
 
-
-        return listAll.map(store -> new StorePaginationDto(
+        return listAll.stream()
+                .map(store -> new StorePaginationDto(
                         new StoreResponseDto(
                                 store.getContact(),
-                                store.getAddress()),
+                                new AddressResponseDto(
+                                        store.getAddress().getCep(),
+                                        store.getAddress().getLogradouro(),
+                                        store.getAddress().getComplemento(),
+                                        store.getAddress().getUnidade(),
+                                        store.getAddress().getBairro(),
+                                        store.getAddress().getLocalidade(),
+                                        store.getAddress().getUf(),
+                                        store.getAddress().getEstado())),
                         page,
                         pageSize,
                         listAll.getTotalPages(),
                         listAll.getNumberOfElements()))
+                .toList();
+    }
+
+    @Override
+    public List<StoresBrandPaginationDto> getAllByBrand(int page, int pageSize, String brandId) {
+        var listAllBrands = storeRepository.findByBrand_BrandId(PageRequest.of(page, pageSize), brandId);
+
+        return listAllBrands.stream()
+                .map(store -> new StoresBrandPaginationDto(
+                        new StoresBrandResponseDto(store.getBrand()),
+                        page,
+                        pageSize,
+                        listAllBrands.getTotalPages(),
+                        listAllBrands.getNumberOfElements()))
                 .toList();
     }
 
@@ -99,5 +122,4 @@ public class StoreServiceImpl implements StoreService {
 
         return storeMapper.toDto(store.get());
     }
-
 }
