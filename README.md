@@ -1,7 +1,6 @@
 # Focus — Business Metrics & Insights SaaS
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-green)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-green)
 ![Docker](https://img.shields.io/badge/Docker-Compose-blue)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
 ![DDD](https://img.shields.io/badge/Architecture-DDD-blue)
