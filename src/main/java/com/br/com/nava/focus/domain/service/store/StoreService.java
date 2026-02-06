@@ -3,7 +3,7 @@ package com.br.com.nava.focus.domain.service.store;
 import com.br.com.nava.focus.adapter.dto.store.CreateStoreRequestDto;
 import com.br.com.nava.focus.adapter.dto.store.StorePaginationDto;
 import com.br.com.nava.focus.adapter.dto.store.StoreResponseDto;
-import com.br.com.nava.focus.domain.model.Store;
+import com.br.com.nava.focus.adapter.dto.store.StoresBrandPaginationDto;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,5 +15,7 @@ public interface StoreService {
     List<StorePaginationDto> getAllStores(int page, int pageSize);
 
     StoreResponseDto getStoreById(UUID id);
+
+    List<StoresBrandPaginationDto> getAllByBrand(int page, int pageSize, String brandId);
 
 }
