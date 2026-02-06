@@ -1,5 +1,6 @@
 package com.br.com.nava.focus.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +26,8 @@ public class Store {
     @Embedded
     private Contact contact;
 
-    @OneToOne(mappedBy = "store")
+    @OneToOne(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "address_id")
     private Address address;
 
     @OneToMany(mappedBy = "store")
@@ -36,6 +38,7 @@ public class Store {
 
     @ManyToOne
     @JoinColumn(name = "brand_id")
+    @JsonIgnore
     private Brand brand;
 
     public Store(UUID storeId, String name, Contact contact, Address address, List<User> users, List<StoreProduct> storeProducts, Brand brand) {
