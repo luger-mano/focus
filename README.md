@@ -25,8 +25,6 @@ Além de atender necessidades reais de negócio, o projeto serve como laboratór
 
 ---
 
----
-
 ## 🎯 Objetivos do Sistema
 
 O Focus permite:
