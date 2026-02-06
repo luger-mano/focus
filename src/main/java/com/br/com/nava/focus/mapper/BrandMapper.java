@@ -9,7 +9,6 @@ import org.mapstruct.Mapper;
 public interface BrandMapper {
 
     Brand brandRequestToEntity(BrandRequestDto dto);
-    Brand brandResponseToEntity(BrandResponseDto dto);
 
     BrandResponseDto brandEntityToBrandResponseDto(Brand brand);
 
