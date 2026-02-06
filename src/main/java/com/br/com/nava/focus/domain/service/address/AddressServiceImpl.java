@@ -35,12 +35,14 @@ public class AddressServiceImpl implements AddressService, ViaCepIntegration {
             var addressDto = getAddressByCep(addressRequestDto.cep());
             var addressEntity = addressDto.toEntity();
 
+            addressEntity.setStore(store);
+
             log.info("Endereço salvo com sucesso no banco: {}", addressEntity);
             return addressRepository.save(addressEntity);
 
         } catch (Exception e) {
             log.error("Não foi possível salvar endereço no banco: {}", e.getMessage());
-            return new Address();
+            throw e;
         }
     }
 

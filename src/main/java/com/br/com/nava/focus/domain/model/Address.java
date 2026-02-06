@@ -16,6 +16,7 @@ public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "address_id")
     private UUID addressId;
     private String cep;
     private String logradouro;
@@ -41,7 +42,7 @@ public class Address {
     private User user;
 
     public Address(UUID addressId, String cep, String logradouro, String complemento, String unidade, String bairro,
-                   String localidade, String uf, String estado, String regiao, String ibge, String gia, String siafi) {
+                   String localidade, String uf, String estado) {
         this.addressId = addressId;
         this.cep = cep;
         this.logradouro = logradouro;
@@ -51,10 +52,6 @@ public class Address {
         this.localidade = localidade;
         this.uf = uf;
         this.estado = estado;
-        this.regiao = regiao;
-        this.ibge = ibge;
-        this.gia = gia;
-        this.siafi = siafi;
     }
 
     public Address() {
