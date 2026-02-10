@@ -1,22 +1,19 @@
 package com.br.com.nava.focus.adapter.dto.security;
 
-import com.br.com.nava.focus.domain.model.Address;
-import com.br.com.nava.focus.domain.model.Role;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
 
-import java.util.Date;
-import java.util.Set;
+@Getter
+public class LoginRequestDto {
 
-public record LoginRequestDto(
-        String fullName,
-        String email,
-        String password,
-        String cpf,
-        String phone,
-        Date enteredAt,
-        Date creationAt,
-        Date updateAt,
-        Date deletedAt,
-        Address address,
-        Set<Role> roles) {
+    @NotBlank(message = "O campo email deve ser preenchido.")
+    String email;
 
+    @NotBlank(message = "O campo password deve ser preenchido.")
+    String password;
+
+    public LoginRequestDto(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 }
