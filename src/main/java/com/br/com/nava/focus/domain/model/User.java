@@ -1,12 +1,14 @@
 package com.br.com.nava.focus.domain.model;
 
 
+import com.br.com.nava.focus.adapter.dto.security.LoginRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
 import java.util.*;
@@ -49,7 +51,7 @@ public class User {
     public User() {
     }
 
-    public boolean isLoginCorrect(){
-        return false;
+    public boolean isLoginCorrect(LoginRequestDto dto, PasswordEncoder passwordEncoder){
+        return passwordEncoder.matches(dto.getPassword(), this.password);
     }
 }
