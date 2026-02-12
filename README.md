@@ -6,6 +6,7 @@
 ![DDD](https://img.shields.io/badge/Architecture-DDD-blue)
 ![SOLID](https://img.shields.io/badge/Design-SOLID-purple)
 ![SaaS](https://img.shields.io/badge/Type-SaaS-darkgreen)
+![Redis](https://img.shields.io/badge/-Redis-DC382D?logo=Redis&logoColor=FFF)
 
 ---
 
