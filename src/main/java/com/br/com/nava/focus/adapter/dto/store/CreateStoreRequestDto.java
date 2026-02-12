@@ -2,19 +2,22 @@ package com.br.com.nava.focus.adapter.dto.store;
 
 import com.br.com.nava.focus.adapter.dto.address.AddressRequestDto;
 import com.br.com.nava.focus.domain.model.Contact;
-import com.br.com.nava.focus.domain.model.Product;
 import com.br.com.nava.focus.domain.model.Store;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.HashSet;
+@Getter
+@Setter
+public class CreateStoreRequestDto {
 
-public record CreateStoreRequestDto(@NotBlank(message = "O campo nome deve ser preenchido")
-                                    String name,
-                                    @NotEmpty
-                                    Contact contact,
-                                    @NotEmpty(message = "As informações de endereço não podem estar vazias")
-                                    AddressRequestDto address) {
+    @NotBlank(message = "O campo nome deve ser preenchido")
+    private String name;
+    @NotEmpty
+    private Contact contact;
+    @NotEmpty(message = "As informações de endereço não podem estar vazias")
+    private AddressRequestDto address;
 
     public Store toEntity() {
         Store store = new Store();

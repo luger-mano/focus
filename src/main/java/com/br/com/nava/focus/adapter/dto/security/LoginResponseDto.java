@@ -7,9 +7,9 @@ import lombok.Setter;
 @Setter
 public class LoginResponseDto {
 
-    String accessToken;
+    private String accessToken;
 
-    Long expiresIn;
+    private Long expiresIn;
 
     public LoginResponseDto(String accessToken, Long expiresIn) {
         this.accessToken = accessToken;
