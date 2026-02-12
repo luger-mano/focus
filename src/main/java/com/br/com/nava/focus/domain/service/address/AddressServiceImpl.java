@@ -32,7 +32,7 @@ public class AddressServiceImpl implements AddressService, ViaCepIntegration {
     public Address saveAddress(AddressRequestDto addressRequestDto, Store store) {
         try {
 
-            var addressDto = getAddressByCep(addressRequestDto.cep());
+            var addressDto = getAddressByCep(addressRequestDto.getCep());
             var addressEntity = addressDto.toEntity();
 
             addressEntity.setStore(store);

@@ -1,6 +1,5 @@
 package com.br.com.nava.focus.infra.exception;
 
-import com.nimbusds.jwt.proc.ExpiredJWTException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.AccountStatusException;
@@ -44,13 +43,6 @@ public class GlobalExceptionHandler extends RuntimeException {
         if (exception instanceof SignatureException) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(401), exception.getMessage());
             errorDetail.setProperty("description", "The JWT signature is invalid.");
-
-            return errorDetail;
-        }
-
-        if (exception instanceof ExpiredJWTException) {
-            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(401), exception.getMessage());
-            errorDetail.setProperty("description", "The JWT token has expired.");
 
             return errorDetail;
         }

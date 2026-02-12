@@ -11,7 +11,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "TABLE_USERS")

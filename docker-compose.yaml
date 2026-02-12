@@ -1,18 +1,16 @@
-version: '3.8'
-
 services:
+
   postgresql-db:
-    image: postgis/postgis
+    image: postgres:18
     container_name: focus-post
     restart: unless-stopped
     ports:
       - "5432:5432"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql-focus:5432/focus_db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/focus_db
       POSTGRES_USER: root
       POSTGRES_PASSWORD: 3571
-    volumes:
-      - postgresql-db:/var/lib/postgresql/data
+      POSTGRES_DB: focus_db
     healthcheck:
       test: ["CMD-SHELL", "pq_isready -U postgres"]
       retries: 3
@@ -20,8 +18,14 @@ services:
       interval: 10s
       start_period: 30s
 
-volumes:
-  postgresql-db:
+  redis-focus:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+
 
 networks:
   databases-focus:
