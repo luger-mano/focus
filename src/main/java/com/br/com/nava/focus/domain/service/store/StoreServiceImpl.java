@@ -13,12 +13,14 @@ import com.br.com.nava.focus.domain.service.brand.BrandService;
 import com.br.com.nava.focus.mapper.StoreMapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -41,8 +43,8 @@ public class StoreServiceImpl implements StoreService {
     public StoreResponseDto createStore(CreateStoreRequestDto requestDto, String brandId) {
 
         try {
-            if (storeRepository.existsByContactEmail(requestDto.contact().getEmail())) {
-                log.warn("Já existe uma loja cadastrada com o email: {}", requestDto.contact().getEmail());
+            if (storeRepository.existsByContactEmail(requestDto.getContact().getEmail())) {
+                log.warn("Já existe uma loja cadastrada com o email: {}", requestDto.getContact().getEmail());
                 return new StoreResponseDto(null, null);
             }
 
@@ -51,7 +53,7 @@ public class StoreServiceImpl implements StoreService {
             Brand brand = brandService.findById(brandId);
             storeEntity.setBrand(brand);
 
-            Address addressSaved = addressService.saveAddress(requestDto.address(), storeEntity);
+            Address addressSaved = addressService.saveAddress(requestDto.getAddress(), storeEntity);
             storeEntity.setAddress(addressSaved);
 
             Store storeSaved = storeRepository.save(storeEntity);
@@ -65,6 +67,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    @Cacheable(cacheNames = "stores", key = "#page + '-' + #pageSize")
     public List<StorePaginationDto> getAllStores(int page, int pageSize) {
         var listAll = this.storeRepository.findAll(PageRequest.of(page,
                 pageSize));
@@ -86,7 +89,7 @@ public class StoreServiceImpl implements StoreService {
                         pageSize,
                         listAll.getTotalPages(),
                         listAll.getNumberOfElements()))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
