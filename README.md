@@ -1,10 +1,10 @@
 # Focus — Business Metrics & Insights SaaS
-![Java](https://img.shields.io/badge/Java-17-orange)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-green)
-![Docker](https://img.shields.io/badge/Docker-Compose-blue)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
+![Java](https://img.shields.io/badge/Java-000?logo=openjdk&logoColor=fff&style=flat)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?logo=springboot&logoColor=fff&style=flat)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff&style=flat)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=fff&style=flat)
 ![DDD](https://img.shields.io/badge/Architecture-DDD-blue)
-![SOLID](https://img.shields.io/badge/Design-SOLID-purple)
+![SOLID](https://img.shields.io/badge/Solid-2C4F7C?logo=solid&logoColor=fff&style=flat)
 ![SaaS](https://img.shields.io/badge/Type-SaaS-darkgreen)
 ![Redis](https://img.shields.io/badge/-Redis-DC382D?logo=Redis&logoColor=FFF)
 
