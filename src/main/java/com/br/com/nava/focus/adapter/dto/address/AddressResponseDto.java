@@ -32,6 +32,21 @@ public class AddressResponseDto {
         return address;
     }
 
+    public AddressRequestDto toRequestDto(){
+        AddressRequestDto addressDto = new AddressRequestDto();
+
+        addressDto.setCep(cep);
+        addressDto.setLogradouro(logradouro);
+        addressDto.setComplemento(complemento);
+        addressDto.setUnidade(unidade);
+        addressDto.setBairro(bairro);
+        addressDto.setLocalidade(localidade);
+        addressDto.setUf(uf);
+        addressDto.setEstado(estado);
+
+        return addressDto;
+    }
+
     public AddressResponseDto(String cep, String logradouro, String complemento, String unidade, String bairro, String localidade, String uf, String estado) {
         this.cep = cep;
         this.logradouro = logradouro;
