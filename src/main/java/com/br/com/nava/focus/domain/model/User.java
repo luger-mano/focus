@@ -35,8 +35,9 @@ public class User {
     private Instant updateAt;
     @OneToOne
     @JoinColumn(name = "address_id")
+    @JsonIgnore
     private Address address;
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "TABLE_USERS_ROLES",
             joinColumns = @JoinColumn(name = "user_id"),
