@@ -1,6 +1,6 @@
 package com.br.com.nava.focus.adapter.dto.user;
 
-import com.br.com.nava.focus.domain.model.Address;
+import com.br.com.nava.focus.adapter.dto.address.AddressRequestDto;
 import com.br.com.nava.focus.domain.model.Role;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
@@ -28,14 +28,10 @@ public class CreateUserRequestDto{
         @Pattern(regexp = "^\\([1-9]{2}\\) (?:[2-8]|9[0-9])[0-9]{3}-[0-9]{4}$")
         private String phone;
         @PastOrPresent
-        private Date enteredAt;
-        @PastOrPresent
         private Date creationAt;
         @PastOrPresent
         private Date updateAt;
-        @PastOrPresent
-        private Date deletedAt;
         @NotEmpty(message = "O campo address deve ser preenchido.")
-        private Address address;
+        private AddressRequestDto address;
         private Set<Role> roles;
 }
