@@ -4,6 +4,7 @@ import com.br.com.nava.focus.adapter.dto.address.AddressRequestDto;
 import com.br.com.nava.focus.adapter.dto.address.AddressResponseDto;
 import com.br.com.nava.focus.domain.model.Address;
 import com.br.com.nava.focus.domain.model.Store;
+import com.br.com.nava.focus.domain.model.User;
 import com.br.com.nava.focus.domain.repository.AddressRepository;
 import com.br.com.nava.focus.domain.repository.ViaCepIntegration;
 import com.google.gson.Gson;
@@ -29,13 +30,19 @@ public class AddressServiceImpl implements AddressService, ViaCepIntegration {
 
     @Override
     @Transactional
-    public Address saveAddress(AddressRequestDto addressRequestDto, Store store) {
+    public Address saveAddress(AddressRequestDto addressRequestDto, Object entity) {
         try {
 
             var addressDto = getAddressByCep(addressRequestDto.getCep());
             var addressEntity = addressDto.toEntity();
 
-            addressEntity.setStore(store);
+            if (entity instanceof Store) {
+            addressEntity.setStore((Store) entity);
+            }
+
+            if (entity instanceof User) {
+            addressEntity.setUser((User) entity);
+            }
 
             log.info("Endereço salvo com sucesso no banco: {}", addressEntity);
             return addressRepository.save(addressEntity);
