@@ -22,8 +22,14 @@ public class Store {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @Embedded
-    private Contact contact;
+    @Column(name = "phoneNumber", nullable = false, unique = true)
+    private String phoneNumber;
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "cnpj", nullable = false, unique = true)
+    private String cnpj;
 
     @OneToOne(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
@@ -40,10 +46,12 @@ public class Store {
     @JsonIgnore
     private Brand brand;
 
-    public Store(UUID storeId, String name, Contact contact, Address address, List<User> users, List<StoreProduct> storeProducts, Brand brand) {
+    public Store(UUID storeId, String name, String phoneNumber, String email, String cnpj, Address address, List<User> users, List<StoreProduct> storeProducts, Brand brand) {
         this.storeId = storeId;
         this.name = name;
-        this.contact = contact;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.cnpj = cnpj;
         this.address = address;
         this.users = users;
         this.storeProducts = storeProducts;

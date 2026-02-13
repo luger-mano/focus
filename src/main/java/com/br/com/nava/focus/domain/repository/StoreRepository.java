@@ -9,6 +9,6 @@ import java.util.UUID;
 
 public interface StoreRepository extends JpaRepository<Store, UUID> {
 
-    boolean existsByContactEmail(String email);
+    boolean existsByEmail(String email);
     Page<Store> findByBrand_BrandId(Pageable pageable, String brandId);
 }
