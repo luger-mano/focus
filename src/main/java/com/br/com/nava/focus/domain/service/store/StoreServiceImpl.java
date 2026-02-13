@@ -15,7 +15,9 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,9 +45,9 @@ public class StoreServiceImpl implements StoreService {
     public StoreResponseDto createStore(CreateStoreRequestDto requestDto, String brandId) {
 
         try {
-            if (storeRepository.existsByContactEmail(requestDto.getContact().getEmail())) {
-                log.warn("Já existe uma loja cadastrada com o email: {}", requestDto.getContact().getEmail());
-                return new StoreResponseDto(null, null);
+            if (storeRepository.existsByEmail(requestDto.getEmail())) {
+                log.warn("Já existe uma loja cadastrada com o email: {}", requestDto.getEmail());
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe uma loja com esse nome");
             }
 
             Store storeEntity = requestDto.toEntity();
@@ -62,7 +64,7 @@ public class StoreServiceImpl implements StoreService {
             return storeMapper.toDto(storeSaved);
         } catch (Exception e) {
             log.error("Não foi possível criar uma loja no banco.");
-            return new StoreResponseDto(null, null);
+            throw new RuntimeException(e);
         }
     }
 
@@ -75,7 +77,9 @@ public class StoreServiceImpl implements StoreService {
         return listAll.stream()
                 .map(store -> new StorePaginationDto(
                         new StoreResponseDto(
-                                store.getContact(),
+                                store.getPhoneNumber(),
+                                store.getEmail(),
+                                store.getCnpj(),
                                 new AddressResponseDto(
                                         store.getAddress().getCep(),
                                         store.getAddress().getLogradouro(),
