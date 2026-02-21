@@ -24,9 +24,10 @@ public class LoginServiceImpl implements LoginService {
     private final UserRepository userRepository;
     private BCryptPasswordEncoder passwordEncoder;
 
-    public LoginServiceImpl(JwtEncoder jwtEncoder, UserRepository userRepository) {
+    public LoginServiceImpl(JwtEncoder jwtEncoder, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.jwtEncoder = jwtEncoder;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -35,7 +36,9 @@ public class LoginServiceImpl implements LoginService {
 
         Optional<User> user = userRepository.findByEmail(dto.getEmail());
 
-        if (user.isPresent()) {
+        if (user.isEmpty() || !user.get().isLoginCorrect(dto, passwordEncoder)){
+            throw new BadCredentialsException("Email ou Senha inválidos.");
+        }
 
             Instant now = Instant.now();
             long expiresIn = 300L;
@@ -47,7 +50,7 @@ public class LoginServiceImpl implements LoginService {
                     .collect(Collectors.joining(" "));
 
             JwtClaimsSet claims = JwtClaimsSet.builder()
-                    .issuer("focus_java")
+                    .issuer("mybackend")
                     .subject(user.get().getUserId().toString())
                     .issuedAt(now)
                     .expiresAt(now.plusSeconds(expiresIn))
@@ -61,8 +64,5 @@ public class LoginServiceImpl implements LoginService {
             response.setExpiresIn(expiresIn);
 
             return response;
-        }
-
-        throw new BadCredentialsException("Email ou Senha inválidos.");
     }
 }
