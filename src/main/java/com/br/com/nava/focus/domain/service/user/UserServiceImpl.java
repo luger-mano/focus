@@ -14,15 +14,14 @@ import com.br.com.nava.focus.domain.service.store.StoreService;
 import com.br.com.nava.focus.mapper.UserMapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -96,12 +95,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Cacheable(cacheNames = "users")
     public List<UserResponseDto> getUsers() {
         var users = userRepository.findAll();
 
         return users.stream()
                 .map(userMapper::userEntityToUserResponseDto)
-                .toList();
+                .collect(Collectors.toList());
     }
 
 
