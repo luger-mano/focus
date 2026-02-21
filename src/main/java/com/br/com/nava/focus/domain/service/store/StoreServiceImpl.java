@@ -97,6 +97,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    @Cacheable(cacheNames = "store", key = "#page + '-' + #pageSize + '-' + #brandId")
     public List<StoresBrandPaginationDto> getAllByBrand(int page, int pageSize, String brandId) {
         var listAllBrands = storeRepository.findByBrand_BrandId(PageRequest.of(page, pageSize), brandId);
 
@@ -107,10 +108,11 @@ public class StoreServiceImpl implements StoreService {
                         pageSize,
                         listAllBrands.getTotalPages(),
                         listAllBrands.getNumberOfElements()))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
+    @Cacheable(cacheNames = "store", key = "#id")
     public StoreResponseDto getStoreById(UUID id) {
         SearchStrategy<Store, UUID> strategy = new Researcher<>();
 
@@ -126,7 +128,6 @@ public class StoreServiceImpl implements StoreService {
         if (store.isEmpty()) {
             throw new RuntimeException();
         }
-
         return storeMapper.toDto(store.get());
     }
 }
