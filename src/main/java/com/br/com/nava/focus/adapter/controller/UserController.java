@@ -8,6 +8,7 @@ import com.br.com.nava.focus.domain.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,13 +21,15 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/store/{storeId}/user")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PostMapping("/admin/store/{storeId}/user")
     public ResponseEntity<CreateUserResponseDto> createUser(@RequestBody CreateUserRequestDto dto, @PathVariable UUID storeId){
         var user = userService.createUser(dto, storeId);
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/users")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @GetMapping("/admin/users")
     public ResponseEntity<List<UserResponseDto>> getUsers(){
         List<UserResponseDto> users = userService.getUsers();
 

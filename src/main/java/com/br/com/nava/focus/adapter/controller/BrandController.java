@@ -7,6 +7,7 @@ import com.br.com.nava.focus.domain.service.brand.BrandService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,13 +17,15 @@ public class BrandController {
 
     private final BrandService brandService;
 
-    @PostMapping("/brand")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PostMapping("/admin/brand")
     public ResponseEntity<BrandResponseDto> createBrand(@RequestBody @Valid BrandRequestDto dto) {
         var brand = brandService.createBrand(dto);
         return ResponseEntity.ok(brand);
     }
 
-    @GetMapping("/{brandId}/brands")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @GetMapping("/admin/{brandId}/brands")
     public ResponseEntity<BrandResponseDto> getAllBrandsById(@PathVariable String brandId){
         var brand = brandService.getBrandById(brandId);
         return ResponseEntity.ok(brand);

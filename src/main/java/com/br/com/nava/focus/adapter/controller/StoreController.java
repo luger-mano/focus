@@ -8,6 +8,7 @@ import com.br.com.nava.focus.adapter.dto.store.StoresBrandPaginationDto;
 import com.br.com.nava.focus.domain.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,13 +21,15 @@ public class StoreController {
 
     private final StoreService storeService;
 
-    @PostMapping("/brand/{brandId}/store")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PostMapping("/admin/brand/{brandId}/store")
     public ResponseEntity<StoreResponseDto> createStore(@RequestBody CreateStoreRequestDto requestDto, @PathVariable String brandId) {
         var storeCreated = storeService.createStore(requestDto, brandId);
         return ResponseEntity.ok(storeCreated);
     }
 
-    @GetMapping("/stores")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @GetMapping("/admin/stores")
     public ResponseEntity<List<StorePaginationDto>> getAllStores(@RequestParam(value = "page",
                                                                          defaultValue = "0") int page,
                                                                  @RequestParam(value = "pageSize",
@@ -35,13 +38,15 @@ public class StoreController {
         return ResponseEntity.ok(stores);
     }
 
-    @GetMapping("/store/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @GetMapping("/admin/store/{id}")
     public ResponseEntity<StoreResponseDto> getStoreById(@PathVariable UUID id) {
         var storeId = storeService.getStoreById(id);
         return ResponseEntity.ok(storeId);
     }
 
-    @GetMapping("/brand/{brandId}/stores")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @GetMapping("/admin/brand/{brandId}/stores")
     public ResponseEntity<List<StoresBrandPaginationDto>> getByBrand(@RequestParam(value = "page",
                                                                                     defaultValue = "0") int page,
                                                                      @RequestParam(value = "pageSize",
