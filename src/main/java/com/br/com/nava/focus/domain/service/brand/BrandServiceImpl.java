@@ -7,6 +7,7 @@ import com.br.com.nava.focus.domain.model.Brand;
 import com.br.com.nava.focus.domain.repository.BrandRepository;
 import com.br.com.nava.focus.mapper.BrandMapper;
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -37,6 +38,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
+    @Cacheable(cacheNames = "brand", key = "#brandId")
     public BrandResponseDto getBrandById(String brandId) {
         var brandOpp = brandRepository.findByBrandId(brandId)
                 .orElseThrow(
@@ -47,6 +49,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
+    @Cacheable(cacheNames = "brand", key = "#brandId")
     public Brand findById(String brandId) {
         return brandRepository.findById(brandId)
                 .orElseThrow(
