@@ -2,10 +2,12 @@ package com.br.com.nava.focus.domain.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "TABLE_ROLES")
 @Getter
+@Setter
 public class Role {
 
 
@@ -27,4 +29,11 @@ public class Role {
         }
     }
 
+    public Role(Long roleId, String name) {
+        this.roleId = roleId;
+        this.name = name;
+    }
+
+    public Role() {
+    }
 }

@@ -53,6 +53,20 @@ public class User {
     public User() {
     }
 
+    public User(UUID userId, String fullName, String email, String password, String cpf, String phone, Instant creationAt, Instant updateAt, Address address, Set<Role> roles, Store store) {
+        this.userId = userId;
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.cpf = cpf;
+        this.phone = phone;
+        this.creationAt = creationAt;
+        this.updateAt = updateAt;
+        this.address = address;
+        this.roles = roles;
+        this.store = store;
+    }
+
     public boolean isLoginCorrect(LoginRequestDto dto, PasswordEncoder passwordEncoder){
         return passwordEncoder.matches(dto.getPassword(), this.password);
     }

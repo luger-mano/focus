@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class CreateUserRequestDto{
+public class    CreateUserRequestDto{
         @NotEmpty(message = "O campo fullName deve ser preenchido.")
         @Min(value = 10)
         @Max(value = 65)
@@ -34,4 +34,17 @@ public class CreateUserRequestDto{
         @NotEmpty(message = "O campo address deve ser preenchido.")
         private AddressRequestDto address;
         private Set<Role> roles;
+
+        public CreateUserRequestDto(String fullName, String email, String password, String cpf, String phone, Date creationAt, Date updateAt, AddressRequestDto address, Set<Role> roles) {
+                this.fullName = fullName;
+                this.email = email;
+                this.password = password;
+                this.cpf = cpf;
+                this.phone = phone;
+                this.creationAt = creationAt;
+                this.updateAt = updateAt;
+                this.address = address;
+                this.roles = roles;
+        }
+
 }
