@@ -1,35 +1,52 @@
-services:
+  services:
 
-  postgresql-db:
-    image: postgres:18
-    container_name: focus-post
-    restart: unless-stopped
-    ports:
-      - "5432:5432"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/focus_db
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: 3571
-      POSTGRES_DB: focus_db
-    healthcheck:
-      test: ["CMD-SHELL", "pq_isready -U postgres"]
-      retries: 3
-      timeout: 5s
-      interval: 10s
-      start_period: 30s
+    postgresql-focus:
+      image: postgres:16
+      container_name: postgres
+      restart: unless-stopped
+      ports:
+        - "5432:5432"
+      environment:
+        POSTGRES_USER: root
+        POSTGRES_PASSWORD: 3571
+        POSTGRES_DB: focus_db
+      volumes:
+        - postgres_data_focus:/var/lib/postgresql/data
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U root -d focus_db"]
+        retries: 3
+        timeout: 5s
+        interval: 10s
+        start_period: 30s
 
-  redis-focus:
-    image: redis:latest
-    container_name: redis
-    restart: always
-    ports:
-      - "6379:6379"
+    redis-focus:
+      image: redis:latest
+      container_name: redis
+      restart: always
+      ports:
+        - "6379:6379"
+
+    java-focus:
+      image: lucasgerman0/focus-app-msb:v1
+      container_name: java
+      ports:
+        - "8080:8080"
+      environment:
+        DB_HOST: postgresql-focus
+        REDIS_HOST: redis-focus
+      depends_on:
+        postgresql-focus:
+          condition: service_healthy
+        redis-focus:
+          condition: service_started
 
 
+  volumes:
+    postgres_data_focus:
 
-networks:
-  databases-focus:
-    name: my-pre-existing-postgres-networking
-    external: false
+  networks:
+    databases-focus:
+      name: my-pre-existing-postgres-networking
+      external: false
 
 
