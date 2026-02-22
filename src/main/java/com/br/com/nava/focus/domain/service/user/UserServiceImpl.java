@@ -54,21 +54,22 @@ public class UserServiceImpl implements UserService{
             log.info("Encontrar um usuário pelo email: {}", dto.getEmail());
 
             var existsByEmail = userRepository.existsByEmail(dto.getEmail());
+            var existsByCpf = userRepository.existsByCpf(dto.getCpf());
 
             User userEntity = userMapper.createUserRequestDtoToUserEntity(dto);
 
-            if (existsByEmail){
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um usuário com esse email: " + dto.getEmail());
+            if (existsByEmail && existsByCpf){
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um usuário criado com esses dados");
             }
 
             // Buscar Store
             log.info("Buscar store");
             var storeDto = storeService.getStoreById(storeId);
-            Store storeEntity = storeDto.toEntity(userEntity, storeId);
+            Store storeEntity = storeDto.toUserEntity(userEntity, storeId);
 
             // Buscar Role
             log.info("Buscar role");
-            Role role = roleRepository.findByName(Role.Values.EMPLOYEE.name());
+            Role role = roleRepository.findByName(Role.Values.CLIENT.name());
 
             // Buscar e Salvar Endereço
             log.info("Buscar e salvar endereço");

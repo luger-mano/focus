@@ -5,7 +5,6 @@ import com.br.com.nava.focus.adapter.dto.address.AddressResponseDto;
 import com.br.com.nava.focus.adapter.dto.store.StoreResponseDto;
 import com.br.com.nava.focus.adapter.dto.user.CreateUserRequestDto;
 import com.br.com.nava.focus.adapter.dto.user.CreateUserResponseDto;
-import com.br.com.nava.focus.adapter.dto.user.UserResponseDto;
 import com.br.com.nava.focus.domain.model.Address;
 import com.br.com.nava.focus.domain.model.Role;
 import com.br.com.nava.focus.domain.model.Store;
@@ -22,12 +21,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.server.ResponseStatusException;
 
-import javax.swing.text.html.Option;
 import java.time.Instant;
 import java.util.Date;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -73,7 +69,7 @@ class UserServiceImplTest {
         var storeResponse = mock(StoreResponseDto.class);
         Store storeEntity = new Store();
         when(storeService.getStoreById(storeId)).thenReturn(storeResponse);
-        when(storeResponse.toEntity(any(), eq(storeId))).thenReturn(storeEntity);
+        when(storeResponse.toUserEntity(any(), eq(storeId))).thenReturn(storeEntity);
 
         Role role = new Role();
         role.setName(Role.Values.EMPLOYEE.name());
