@@ -50,6 +50,11 @@ public class User {
     @JsonIgnore
     private Store store;
 
+    @OneToOne
+    @JoinColumn(name = "employee_id")
+    @JsonIgnore
+    private Employee employee;
+
     public User() {
     }
 

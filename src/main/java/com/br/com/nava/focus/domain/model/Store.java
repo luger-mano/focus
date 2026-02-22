@@ -46,7 +46,11 @@ public class Store {
     @JsonIgnore
     private Brand brand;
 
-    public Store(UUID storeId, String name, String phoneNumber, String email, String cnpj, Address address, List<User> users, List<StoreProduct> storeProducts, Brand brand) {
+    @OneToMany(mappedBy = "store")
+    @JsonIgnore
+    private List<Employee> employees;
+
+    public Store(UUID storeId, String name, String phoneNumber, String email, String cnpj, Address address, List<User> users, List<StoreProduct> storeProducts, Brand brand, List<Employee> employees) {
         this.storeId = storeId;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -56,6 +60,7 @@ public class Store {
         this.users = users;
         this.storeProducts = storeProducts;
         this.brand = brand;
+        this.employees = employees;
     }
 
     public Store() {
