@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class    CreateUserRequestDto{
+public class CreateUserRequestDto{
         @NotEmpty(message = "O campo fullName deve ser preenchido.")
         @Min(value = 10)
         @Max(value = 65)
