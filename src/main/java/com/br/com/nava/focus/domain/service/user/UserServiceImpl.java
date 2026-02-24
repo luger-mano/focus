@@ -69,7 +69,8 @@ public class UserServiceImpl implements UserService{
 
             // Buscar Role
             log.info("Buscar role");
-            Role role = roleRepository.findByName(Role.Values.CLIENT.name());
+            Role role = roleRepository.findByName(Role.Values.CLIENT.name())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum usuário encontrado."));
 
             // Buscar e Salvar Endereço
             log.info("Buscar e salvar endereço");
@@ -87,8 +88,6 @@ public class UserServiceImpl implements UserService{
             userRepository.save(userEntity);
 
             return userMapper.userEntityToCreateUserResponseDto(userEntity);
-
-
         }catch (Exception e){
             log.error("Não foi possível criar um usuário no banco. {}", e.getMessage());
             throw new RuntimeException(e);
