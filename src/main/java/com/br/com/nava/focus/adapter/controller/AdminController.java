@@ -1,11 +1,11 @@
 package com.br.com.nava.focus.adapter.controller;
 
 
+import com.br.com.nava.focus.adapter.dto.admin.CreateAdminRequestDto;
 import com.br.com.nava.focus.adapter.dto.employee.CreateEmployeeRequestDto;
 import com.br.com.nava.focus.adapter.dto.employee.CreateEmployeeResponseDto;
-import com.br.com.nava.focus.adapter.dto.user.CreateUserRequestDto;
-import com.br.com.nava.focus.adapter.dto.user.CreateUserResponseDto;
 import com.br.com.nava.focus.adapter.dto.user.UserResponseDto;
+import com.br.com.nava.focus.domain.service.admin.AdminService;
 import com.br.com.nava.focus.domain.service.employee.EmployeeService;
 import com.br.com.nava.focus.domain.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,24 +23,25 @@ public class AdminController {
 
     private final UserService userService;
     private final EmployeeService employeeService;
+    private final AdminService adminService;
 
-    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    @PostMapping("/admin/store/{storeId}/user")
-    public ResponseEntity<CreateUserResponseDto> createUser(@RequestBody CreateUserRequestDto dto, @PathVariable UUID storeId){
-        var user = userService.createUser(dto, storeId);
-        return ResponseEntity.ok(user);
-    }
-
-    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_SUPER_ADMIN')")
     @PostMapping("/admin/store/{storeId}/employee")
-    public ResponseEntity<CreateEmployeeResponseDto> createEmployee(@RequestBody CreateEmployeeRequestDto dto, @PathVariable UUID storeId){
+    public ResponseEntity<CreateEmployeeResponseDto> createEmployee(@RequestBody CreateEmployeeRequestDto dto, @PathVariable UUID storeId) {
         CreateEmployeeResponseDto employee = employeeService.createEmployee(dto, storeId);
         return ResponseEntity.ok(employee);
     }
 
+    @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN')")
+    @PostMapping("/super/store/{storeId}/admin")
+    public ResponseEntity<?> createAdmin(@RequestBody CreateAdminRequestDto dto, @PathVariable UUID storeId){
+        adminService.createAdmin(dto, storeId);
+        return ResponseEntity.ok().build();
+    }
+
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @GetMapping("/admin/users")
-    public ResponseEntity<List<UserResponseDto>> getUsers(){
+    public ResponseEntity<List<UserResponseDto>> getUsers() {
         List<UserResponseDto> users = userService.getUsers();
 
         return ResponseEntity.ok(users);
