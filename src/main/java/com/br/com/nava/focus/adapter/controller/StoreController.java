@@ -21,14 +21,14 @@ public class StoreController {
 
     private final StoreService storeService;
 
-    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN')")
     @PostMapping("/admin/brand/{brandId}/store")
     public ResponseEntity<StoreResponseDto> createStore(@RequestBody CreateStoreRequestDto requestDto, @PathVariable String brandId) {
         var storeCreated = storeService.createStore(requestDto, brandId);
         return ResponseEntity.ok(storeCreated);
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_SUPER_ADMIN')")
     @GetMapping("/admin/stores")
     public ResponseEntity<List<StorePaginationDto>> getAllStores(@RequestParam(value = "page",
                                                                          defaultValue = "0") int page,
@@ -38,14 +38,14 @@ public class StoreController {
         return ResponseEntity.ok(stores);
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_SUPER_ADMIN')")
     @GetMapping("/admin/store/{id}")
     public ResponseEntity<StoreResponseDto> getStoreById(@PathVariable UUID id) {
         var storeId = storeService.getStoreById(id);
         return ResponseEntity.ok(storeId);
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_SUPER_ADMIN')")
     @GetMapping("/admin/brand/{brandId}/stores")
     public ResponseEntity<List<StoresBrandPaginationDto>> getByBrand(@RequestParam(value = "page",
                                                                                     defaultValue = "0") int page,

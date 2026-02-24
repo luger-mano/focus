@@ -7,7 +7,9 @@ import com.br.com.nava.focus.domain.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Set;
 
@@ -29,7 +31,8 @@ public class AdminConfig implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        Role roleAdmin = roleRepository.findByName(Role.Values.ADMIN.name());
+        Role roleAdmin = roleRepository.findByName(Role.Values.SUPER_ADMIN.name())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum usuário encontrado."));;
         var userAdmin = userRepository.findByFullName("admin");
 
         userAdmin.ifPresentOrElse(

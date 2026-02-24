@@ -17,14 +17,14 @@ public class BrandController {
 
     private final BrandService brandService;
 
-    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN')")
     @PostMapping("/admin/brand")
     public ResponseEntity<BrandResponseDto> createBrand(@RequestBody @Valid BrandRequestDto dto) {
         var brand = brandService.createBrand(dto);
         return ResponseEntity.ok(brand);
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_SUPER_ADMIN')")
     @GetMapping("/admin/{brandId}/brands")
     public ResponseEntity<BrandResponseDto> getAllBrandsById(@PathVariable String brandId){
         var brand = brandService.getBrandById(brandId);
