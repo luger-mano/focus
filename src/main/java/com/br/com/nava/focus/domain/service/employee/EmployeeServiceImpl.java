@@ -5,9 +5,9 @@ import com.br.com.nava.focus.adapter.dto.employee.CreateEmployeeResponseDto;
 import com.br.com.nava.focus.domain.model.*;
 import com.br.com.nava.focus.domain.repository.EmployeeRepository;
 import com.br.com.nava.focus.domain.repository.RoleRepository;
+import com.br.com.nava.focus.domain.repository.StoreRepository;
 import com.br.com.nava.focus.domain.repository.UserRepository;
 import com.br.com.nava.focus.domain.service.address.AddressService;
-import com.br.com.nava.focus.domain.service.store.StoreService;
 import com.br.com.nava.focus.mapper.EmployeeMapper;
 import com.br.com.nava.focus.mapper.UserMapper;
 import jakarta.transaction.Transactional;
@@ -17,10 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,17 +31,17 @@ public class EmployeeServiceImpl implements EmployeeService{
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
-    private final StoreService storeService;
+    private final StoreRepository storeRepository;
     private final AddressService addressService;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EmployeeMapper employeeMapper, UserRepository userRepository, UserMapper userMapper, RoleRepository roleRepository, StoreService storeService, AddressService addressService, BCryptPasswordEncoder passwordEncoder) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EmployeeMapper employeeMapper, UserRepository userRepository, UserMapper userMapper, RoleRepository roleRepository, StoreRepository storeRepository, AddressService addressService, BCryptPasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
         this.employeeMapper = employeeMapper;
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.roleRepository = roleRepository;
-        this.storeService = storeService;
+        this.storeRepository = storeRepository;
         this.addressService = addressService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -71,17 +69,17 @@ public class EmployeeServiceImpl implements EmployeeService{
 
             // Buscar Store
             log.info("Buscar store");
-            var storeDto = storeService.getStoreById(storeId);
-            Store storeEntity = storeDto.toEmployeeEntity(userEntity, employeeEntity, storeId);
+            Store storeEntity = storeRepository.findById(storeId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Loja não encontrada. "));
 
             // Buscar Role
             log.info("Buscar role");
-            Role role = roleRepository.findByName(Role.Values.EMPLOYEE.name());
+            Role role = roleRepository.findByName(Role.Values.EMPLOYEE.name())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum usuário encontrado."));
 
             // Buscar e Salvar Endereço
             log.info("Buscar e salvar endereço");
-            var addressResponse = addressService.getAddressByCep(dto.getUserDto().getAddress().getCep());
-            Address addressSaved = addressService.saveAddress(addressResponse.toRequestDto(), employeeEntity.getUser());
+            Address addressSaved = addressService.saveAddress(dto.getUserDto().getAddress(), userEntity);
 
             // Dados de usuário
             userEntity.setAddress(addressSaved);
@@ -93,6 +91,8 @@ public class EmployeeServiceImpl implements EmployeeService{
 
             // Dados do Funcionário
             employeeEntity.setUser(userEntity);
+            userEntity.setEmployee(employeeEntity);
+
             employeeEntity.setStore(storeEntity);
             employeeEntity.setHireDate(LocalDate.now());
             employeeEntity.setSalary(dto.getSalary());
@@ -101,7 +101,6 @@ public class EmployeeServiceImpl implements EmployeeService{
             employeeRepository.save(employeeEntity);
 
             return employeeMapper.employeeEntityToCreateEmployeeResponseDto(employeeEntity);
-
         }catch (Exception e){
             log.error("Não foi possível criar um funcionário no banco.", e);
             throw new RuntimeException(e);
