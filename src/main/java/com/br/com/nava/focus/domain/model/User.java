@@ -33,11 +33,11 @@ public class User {
     private Instant creationAt;
     @UpdateTimestamp
     private Instant updateAt;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     @JsonIgnore
     private Address address;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "TABLE_USERS_ROLES",
             joinColumns = @JoinColumn(name = "user_id"),
