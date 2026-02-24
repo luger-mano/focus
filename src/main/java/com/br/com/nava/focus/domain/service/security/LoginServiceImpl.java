@@ -46,7 +46,7 @@ public class LoginServiceImpl implements LoginService {
             String scopes = user.get()
                     .getRoles()
                     .stream()
-                    .map(Role::getName)
+                    .map(role -> role.getName().toUpperCase())
                     .collect(Collectors.joining(" "));
 
             JwtClaimsSet claims = JwtClaimsSet.builder()

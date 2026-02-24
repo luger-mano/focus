@@ -31,7 +31,6 @@ public class AddressServiceImpl implements AddressService, ViaCepIntegration {
 
     @Override
     @Transactional
-    @CacheEvict(value = "address", allEntries = true)
     public Address saveAddress(AddressRequestDto addressRequestDto, Object entity) {
         try {
 
@@ -39,11 +38,11 @@ public class AddressServiceImpl implements AddressService, ViaCepIntegration {
             var addressEntity = addressDto.toEntity();
 
             if (entity instanceof Store) {
-            addressEntity.setStore((Store) entity);
+                addressEntity.setStore((Store) entity);
             }
 
             if (entity instanceof User) {
-            addressEntity.setUser((User) entity);
+                addressEntity.setUser((User) entity);
             }
 
             log.info("Endereço salvo com sucesso no banco: {}", addressEntity);

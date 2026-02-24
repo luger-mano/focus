@@ -24,6 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -74,7 +75,7 @@ class UserServiceImplTest {
         Role role = new Role();
         role.setName(Role.Values.EMPLOYEE.name());
 
-        when(roleRepository.findByName(anyString())).thenReturn(role);
+        when(roleRepository.findByName(anyString())).thenReturn(Optional.of(role));
 
         var addressResponse = mock(AddressResponseDto.class);
         Address addressEntity = new Address();
