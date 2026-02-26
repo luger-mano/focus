@@ -22,7 +22,7 @@ public class LoginServiceImpl implements LoginService {
 
     private final JwtEncoder jwtEncoder;
     private final UserRepository userRepository;
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public LoginServiceImpl(JwtEncoder jwtEncoder, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.jwtEncoder = jwtEncoder;
