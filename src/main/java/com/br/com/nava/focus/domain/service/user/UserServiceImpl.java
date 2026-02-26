@@ -2,6 +2,7 @@ package com.br.com.nava.focus.domain.service.user;
 
 import com.br.com.nava.focus.adapter.dto.user.CreateUserRequestDto;
 import com.br.com.nava.focus.adapter.dto.user.CreateUserResponseDto;
+import com.br.com.nava.focus.adapter.dto.user.UserInformationDto;
 import com.br.com.nava.focus.adapter.dto.user.UserResponseDto;
 import com.br.com.nava.focus.domain.model.Address;
 import com.br.com.nava.focus.domain.model.Role;
@@ -107,26 +108,60 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public UserResponseDto updateUser(CreateUserRequestDto dto, UUID userId, UUID storeId) {
-        if (!userRepository.existsByEmail(dto.getEmail())){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um usuário com esse email");
+        try{
+
+            log.info("Verificando se existe usuário por email");
+            if (!userRepository.existsByEmail(dto.getEmail())){
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um usuário com esse email");
+            }
+
+            log.info("Buscando usuário pelo Id");
+            User existingUser = userRepository.findById(userId)
+                    .orElseThrow(() ->
+                            new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário com id " +
+                                    userId + " não encontrado."));
+
+            existingUser.setFullName(dto.getFullName());
+            existingUser.setEmail(dto.getEmail());
+            existingUser.setPassword(passwordEncoder.encode(dto.getPassword()));
+            existingUser.setCpf(dto.getCpf());
+            existingUser.setPhone(dto.getPhone());
+            existingUser.setAddress(dto.getAddress().toEntity());
+
+            log.info("Usuário atualizado");
+            User updated = userRepository.save(existingUser);
+
+            return userMapper.userEntityToUserResponseDto(updated);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        User existingUser = userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário com id " +
-                                userId + " não encontrado."));
-
-        existingUser.setFullName(dto.getFullName());
-        existingUser.setEmail(dto.getEmail());
-        existingUser.setPassword(dto.getPassword());
-        existingUser.setCpf(dto.getCpf());
-        existingUser.setPhone(dto.getPhone());
-        existingUser.setAddress(dto.getAddress().toEntity());
-
-        User updated = userRepository.save(existingUser);
-
-        return userMapper.userEntityToUserResponseDto(updated);
     }
 
+    @Override
+    public UserInformationDto getUserInformation(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não existe nenhum usuário com esse email."));
+
+        return userMapper.userEntityToUserInformationDto(user);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(UUID userId) {
+        try{
+            log.info("Buscando usuário pelo ID");
+            if (!userRepository.existsById(userId)){
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe nenhum usuário");
+            }
+
+            log.warn("Usuário deletado.");
+            userRepository.deleteById(userId);
+        } catch (RuntimeException e) {
+            log.error("Não foi possível deletar um usuário.");
+            throw new RuntimeException(e);
+        }
+
+    }
 
 }

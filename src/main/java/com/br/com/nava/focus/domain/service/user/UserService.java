@@ -1,7 +1,9 @@
 package com.br.com.nava.focus.domain.service.user;
 
+import com.br.com.nava.focus.adapter.dto.security.LoginRequestDto;
 import com.br.com.nava.focus.adapter.dto.user.CreateUserRequestDto;
 import com.br.com.nava.focus.adapter.dto.user.CreateUserResponseDto;
+import com.br.com.nava.focus.adapter.dto.user.UserInformationDto;
 import com.br.com.nava.focus.adapter.dto.user.UserResponseDto;
 import jakarta.validation.Valid;
 
@@ -16,4 +18,7 @@ public interface UserService {
 
     UserResponseDto updateUser(CreateUserRequestDto dto, UUID userId, UUID storeId);
 
+    UserInformationDto getUserInformation(UUID userId);
+
+    void deleteUser(UUID userId);
 }
