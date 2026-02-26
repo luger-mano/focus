@@ -14,4 +14,6 @@ public interface UserService {
 
     List<UserResponseDto> getUsers();
 
+    UserResponseDto updateUser(CreateUserRequestDto dto, UUID userId, UUID storeId);
+
 }

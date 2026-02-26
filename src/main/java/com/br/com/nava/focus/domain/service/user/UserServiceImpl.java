@@ -104,5 +104,29 @@ public class UserServiceImpl implements UserService{
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional
+    public UserResponseDto updateUser(CreateUserRequestDto dto, UUID userId, UUID storeId) {
+        if (!userRepository.existsByEmail(dto.getEmail())){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um usuário com esse email");
+        }
+
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário com id " +
+                                userId + " não encontrado."));
+
+        existingUser.setFullName(dto.getFullName());
+        existingUser.setEmail(dto.getEmail());
+        existingUser.setPassword(dto.getPassword());
+        existingUser.setCpf(dto.getCpf());
+        existingUser.setPhone(dto.getPhone());
+        existingUser.setAddress(dto.getAddress().toEntity());
+
+        User updated = userRepository.save(existingUser);
+
+        return userMapper.userEntityToUserResponseDto(updated);
+    }
+
 
 }
