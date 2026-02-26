@@ -3,6 +3,7 @@ package com.br.com.nava.focus.mapper;
 
 import com.br.com.nava.focus.adapter.dto.user.CreateUserRequestDto;
 import com.br.com.nava.focus.adapter.dto.user.CreateUserResponseDto;
+import com.br.com.nava.focus.adapter.dto.user.UserInformationDto;
 import com.br.com.nava.focus.adapter.dto.user.UserResponseDto;
 import com.br.com.nava.focus.domain.model.User;
 import org.mapstruct.Mapper;
@@ -13,6 +14,8 @@ public interface UserMapper {
     CreateUserResponseDto userEntityToCreateUserResponseDto(User user);
 
     UserResponseDto userEntityToUserResponseDto(User user);
+
+    UserInformationDto userEntityToUserInformationDto(User user);
 
     User createUserRequestDtoToUserEntity(CreateUserRequestDto dto);
 }
