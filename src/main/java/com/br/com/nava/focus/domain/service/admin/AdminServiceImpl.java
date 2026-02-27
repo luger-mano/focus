@@ -1,13 +1,13 @@
 package com.br.com.nava.focus.domain.service.admin;
 
 import com.br.com.nava.focus.adapter.dto.admin.CreateAdminRequestDto;
+import com.br.com.nava.focus.adapter.dto.employee.CreateEmployeeRequestDto;
 import com.br.com.nava.focus.domain.model.*;
 import com.br.com.nava.focus.domain.repository.EmployeeRepository;
 import com.br.com.nava.focus.domain.repository.RoleRepository;
 import com.br.com.nava.focus.domain.repository.StoreRepository;
 import com.br.com.nava.focus.domain.repository.UserRepository;
 import com.br.com.nava.focus.domain.service.address.AddressService;
-import com.br.com.nava.focus.domain.service.store.StoreService;
 import com.br.com.nava.focus.mapper.UserMapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -102,6 +102,31 @@ public class AdminServiceImpl implements AdminService {
 
         }catch (Exception e){
             log.error("Não foi possível criar um Admin no banco.", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void updateEmployee(CreateEmployeeRequestDto dto, UUID employeeId, UUID storeId) {
+        try{
+
+            log.info("Verificando se existe funcionário por email");
+            if (!employeeRepository.existsById(employeeId)){
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um funcionário com esse email");
+            }
+
+            log.info("Buscando funcionário pelo Id");
+            Employee existingEmployee = employeeRepository.findById(employeeId)
+                    .orElseThrow(() ->
+                            new ResponseStatusException(HttpStatus.NOT_FOUND, "Funcionário com id " +
+                                    employeeId + " não encontrado."));
+
+            existingEmployee.setSalary(dto.getSalary());
+
+            log.info("Funcionário atualizado");
+            employeeRepository.save(existingEmployee);
+
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
