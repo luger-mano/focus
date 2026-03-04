@@ -22,7 +22,7 @@ public class Employee{
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID employeeId;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.MERGE})
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
