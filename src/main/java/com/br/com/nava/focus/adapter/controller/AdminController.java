@@ -48,8 +48,15 @@ public class AdminController {
     }
     @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
     @PutMapping("/store/{storeId}/employee/{employeeId}/update")
-    public ResponseEntity<Void> updateUser(@RequestBody CreateEmployeeRequestDto dto, @PathVariable UUID employeeId, @PathVariable UUID storeId){
+    public ResponseEntity<Void> updateEmployee(@RequestBody CreateEmployeeRequestDto dto, @PathVariable UUID employeeId, @PathVariable UUID storeId){
         adminService.updateEmployee(dto, employeeId, storeId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
+    @DeleteMapping("/admin/employee/delete")
+    public ResponseEntity<Void> deleteEmployee(@RequestParam("employeeId") UUID employeeId){
+        adminService.deleteEmployee(employeeId);
         return ResponseEntity.ok().build();
     }
 

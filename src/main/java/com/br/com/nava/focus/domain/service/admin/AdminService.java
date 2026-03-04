@@ -9,4 +9,7 @@ public interface AdminService {
     void createAdmin(CreateAdminRequestDto dto, UUID storeId);
 
     void updateEmployee(CreateEmployeeRequestDto dto, UUID employeeId, UUID storeId);
+
+    void deleteEmployee(UUID userId);
+
 }

@@ -130,4 +130,21 @@ public class AdminServiceImpl implements AdminService {
             throw new RuntimeException(e);
         }
     }
+
+
+    @Override
+    @Transactional
+    public void deleteEmployee(UUID employeeId) {
+        if (!employeeRepository.existsById(employeeId)){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um funcionário com esse Id");
+        }
+        try{
+            log.warn("Funcionário deletado.");
+            employeeRepository.deleteById(employeeId);
+        } catch (RuntimeException e) {
+            log.error("Não foi possível deletar um funcionário.");
+            throw new RuntimeException(e);
+        }
+
+    }
 }
