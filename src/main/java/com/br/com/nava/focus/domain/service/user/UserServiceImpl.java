@@ -152,7 +152,7 @@ public class UserServiceImpl implements UserService{
         try{
             log.info("Buscando usuário pelo ID");
             if (!userRepository.existsById(userId)){
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe nenhum usuário");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Não existe nenhum usuário com esse Id");
             }
 
             log.warn("Usuário deletado.");

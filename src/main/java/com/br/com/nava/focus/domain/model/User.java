@@ -49,8 +49,7 @@ public class User {
     @JsonIgnore
     private Store store;
 
-    @OneToOne
-    @JoinColumn(name = "employee_id")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Employee employee;
 
