@@ -19,12 +19,11 @@ import java.util.UUID;
 public class Employee{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID employeeId;
 
-    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.MERGE})
+    @MapsId
+    @OneToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private User user;
 
     @ManyToOne
