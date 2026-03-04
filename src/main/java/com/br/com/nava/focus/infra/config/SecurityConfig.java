@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/user/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/user/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/store/{storeId}/user/{userId}/update").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/store/*/user").permitAll()
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
