@@ -241,6 +241,13 @@ mvn spring-boot:run
 ```
 
 ---
+#### Coleção das requisições para testar a aplicação
+
+```
+# https://.postman.co/workspace/My-Workspace~912e6447-255d-4e54-8700-1363f4cb3c57/collection/32811777-cb78d763-ca71-477c-a717-f7297f6a52e8?action=share&creator=32811777 
+```
+
+---
 
 # 📈 Roadmap
 
